@@ -1,7 +1,7 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
 import { ElConfigProvider } from 'element-plus'
-import { defineComponent } from 'vue'
+import { defineComponent, reactive, toRefs } from 'vue'
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
 import { getCurrentInstance } from 'vue'
 export default defineComponent({
@@ -12,14 +12,17 @@ export default defineComponent({
   },
   setup() {
     const { proxy } = getCurrentInstance()
-    function change(type) {
-      proxy.$i18n.locale = type
-    }
+    const state = reactive({
+      change(type) {
+        proxy.$i18n.locale = type
+        state.size = (state.size === 'small') ? 'big' : 'small'
+      }
+    })
     return {
       zIndex: 3000,
       size: 'small',
       locale: zhCn,
-      change
+      ...toRefs(state)
     }
   }
 })

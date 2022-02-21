@@ -1,9 +1,51 @@
-<script setup>
-defineProps({
-  msg: {
-    type: String,
-    required: false,
+<script>
+import { reactive, toRefs, defineComponent, computed } from 'vue'
+import { sessionStore } from '@/stores/sessionStore'
+import { postLogin } from '@/api/auth'
+import sha512 from 'crypto-js/sha512'
+
+export default defineComponent({
+  props: {
+    msg: {
+      type: String,
+      required: false,
+      default: '!!!!!!!!!!!!!!!'
+    },
   },
+  setup(props, ctx) {
+    const store = sessionStore()
+    store.$subscribe((mutation, state) => {
+      console.log('-mutation-----', mutation)
+      console.log('-state-----', state)
+    })
+    console.log('-store-----', store)
+    const state = reactive({
+      doubleCount: computed(() => {
+        return store.doubleCount
+      }),
+      change() {
+        store.counter++
+      },
+      login() {
+        // payload go here
+        const data = {
+
+        }
+        postLogin(data, {
+          // url params go here
+          params: {
+          },
+          headers: {
+            Authorization: 'Basic Y2xpZW50OjEyMzQ1Ng==',
+            uuid: 'intellect_video_net_front'
+          }
+        }).then(res => {
+          console.log('-------res--------', res)
+        })
+      }
+    })
+    return {...toRefs(state)}
+  }
 })
 </script>
 
@@ -19,15 +61,15 @@ defineProps({
     <div class="bb">bb</div>
 
     <div class="tt">
-      tt
+      {{doubleCount}}
       <div class="bb">bb</div>
     </div>
 
     <div class="long-shadow">aaaaaaaaaaaaa</div>
     <p>{{ $d(new Date(), 'short') }}</p>
     <p>{{ $d(new Date(), 'long', 'cn') }}</p>
-    <el-button size="small" type="primary" class="bug-btn">{{$t(`message.Home`)}}</el-button>
-<el-button  plain>Custom</el-button>
+    <el-button size="small" type="primary" class="bug-btn" @click="change">{{$t(`message.Home`)}}</el-button>
+    <el-button  plain @click="login">LOGIN</el-button>
   </div>
 </template>
 
