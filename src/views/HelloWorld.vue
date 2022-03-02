@@ -2,7 +2,8 @@
 import { reactive, toRefs, defineComponent, computed } from 'vue'
 import { sessionStore } from '@/stores/sessionStore'
 import { postLogin } from '@/api/auth'
-import sha512 from 'crypto-js/sha512'
+import { getCurrentInstance } from 'vue'
+import _ from 'lodash'
 
 export default defineComponent({
   props: {
@@ -19,10 +20,19 @@ export default defineComponent({
       console.log('-state-----', state)
     })
     console.log('-store-----', store)
+    const { proxy } = getCurrentInstance()
     const state = reactive({
+      lodashDemo: _.partition([1, 2, 3, 4], n => n % 2),
+
       doubleCount: computed(() => {
         return store.doubleCount
       }),
+
+
+      changeLang(type) {
+        proxy.$i18n.locale = type
+        store.locale = type
+      },
       change() {
         store.counter++
       },
@@ -68,6 +78,9 @@ export default defineComponent({
     <div class="long-shadow">aaaaaaaaaaaaa</div>
     <p>{{ $d(new Date(), 'short') }}</p>
     <p>{{ $d(new Date(), 'long', 'cn') }}</p>
+    <div>{{lodashDemo}}</div>
+    <el-button size="small" type="primary" class="bug-btn" @click="changeLang('cn')">中文</el-button>
+    <el-button size="small" type="primary" class="bug-btn" @click="changeLang('en')">English</el-button>
     <el-button size="small" type="primary" class="bug-btn" @click="change">{{$t(`message.Home`)}}</el-button>
     <el-button  plain @click="login">LOGIN</el-button>
   </div>

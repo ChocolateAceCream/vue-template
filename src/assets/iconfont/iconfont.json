@@ -6,6 +6,34 @@
   "description": "视频云平台",
   "glyphs": [
     {
+      "icon_id": "1348257",
+      "name": "用户管理",
+      "font_class": "yonghuguanli",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "15628588",
+      "name": "系统配置",
+      "font_class": "xitongpeizhi",
+      "unicode": "e6b3",
+      "unicode_decimal": 59059
+    },
+    {
+      "icon_id": "5062721",
+      "name": "设备管理",
+      "font_class": "shebeiguanli",
+      "unicode": "e688",
+      "unicode_decimal": 59016
+    },
+    {
+      "icon_id": "1314418",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
       "icon_id": "27669365",
       "name": "组件 181 – 38",
       "font_class": "a-zujian18138",

@@ -1,27 +1,27 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
 import { ElConfigProvider } from 'element-plus'
 import { defineComponent, reactive, toRefs } from 'vue'
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
-import { getCurrentInstance } from 'vue'
+import en from 'element-plus/lib/locale/lang/en'
+import { sessionStore } from '@/stores/sessionStore'
 export default defineComponent({
   components: {
     ElConfigProvider,
-    RouterLink,
-    RouterView
   },
   setup() {
-    const { proxy } = getCurrentInstance()
+    const elementPlusLocaleMapper = {
+      'cn': zhCn,
+      'en': en
+    }
+    const store = sessionStore()
+    store.$subscribe((_, s) => {
+      state.locale = elementPlusLocaleMapper[s.locale]
+    })
+
     const state = reactive({
-      change(type) {
-        proxy.$i18n.locale = type
-        state.size = (state.size === 'small') ? 'big' : 'small'
-      }
+      locale: zhCn,
     })
     return {
-      zIndex: 3000,
-      size: 'small',
-      locale: zhCn,
       ...toRefs(state)
     }
   }
@@ -29,16 +29,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <el-config-provider :locale="locale" :size="size" :zIndex="zIndex" >
-      <div class="wrapper">
-        <el-button size="small" type="primary" class="bug-btn" @click="change('cn')">{{$t(`message.Home`)}}</el-button>
-        <el-button size="small" type="primary" class="bug-btn" @click="change('en')">{{$t(`message.Title`)}}</el-button>
-        <nav>
-          <RouterLink to="/">Home</RouterLink>
-          <RouterLink to="/demo">About</RouterLink>
-        </nav>
-      </div>
-    <RouterView />
+  <el-config-provider :locale="locale" :size="`default`" :zIndex="3000" >
+    <router-view />
   </el-config-provider>
 
 </template>

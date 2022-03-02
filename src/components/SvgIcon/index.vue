@@ -1,6 +1,6 @@
 <template>
-    <svg class="svg-icon" aria-hidden="true" :style="`color: ${color};`">
-        <use :xlink:href="iconName"></use>
+    <svg class="svg-icon" aria-hidden="true" :style="`fill: ${calcColor};`">
+      <use :xlink:href="iconName" />
     </svg>
 </template>
 
@@ -15,22 +15,35 @@ export default {
     color: {
       type: String,
       required: false
+    },
+    isColorVariable: {
+      type: Boolean,
+      default: false,
+      required: false
     }
   },
   computed: {
     iconName() {
       return `#${this.iconname}`
+    },
+    calcColor() {
+      if (this.isColorVariable) {
+        return this.$style[this.color]
+      } else {
+        return this.color
+      }
     }
   }
 }
 </script>
+<style module lang="scss" src="@/assets/styles/export.scss"></style>
 
 <style lang="scss">
 .svg-icon {
     width: 1em;
     height: 1em;
     vertical-align: -0.15em;
-    color: $icon-fill-color;
+    color: $dark-brown;
     // fill: currentColor;
     overflow: hidden;
 }

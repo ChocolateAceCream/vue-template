@@ -4,12 +4,14 @@ import { getSignature } from './signature'
 import { sessionStore } from '@/stores/sessionStore'
 import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress'
+import qs from 'qs'
 
 // 创建 api 实例
 const apiAxios = new Proxy(axios.create({
   // https://cn.vitejs.dev/guide/env-and-mode.html
   baseURL: import.meta.env.VITE_APP_API_BASE_URL || '/',
-  timeout: 1000 * 60
+  timeout: 1000 * 60,
+  paramsSerializer: (params) => qs.stringify(params, { indices: false }),
 }), {
   get(target, ...args) {
     return Reflect.get(target, ...args) || Reflect.get(axios, ...args)
@@ -30,24 +32,35 @@ apiAxios.defaults.meta = {
   withProgressBar: false,
 }
 // 设置 post 请求头
-apiAxios.defaults.headers.post['Content-Type'] = 'application/json'
+apiAxios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 supportCancelToken(apiAxios)
 
 // 请求拦截
 apiAxios.interceptors.request.use(config => {
+  config.headers['Content-Type'] = 'application/json;charset=UTF-8'
   if (config.meta?.withProgressBar) { NProgress.start() }
   const store = sessionStore()
 
-  const accessToken = store.token || ''
+  const accessToken = store.accessToken || ''
   if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`
+    config.headers.Authorization = `${accessToken}`
+    // config.headers.Authorization = `Bearer ${accessToken}`
   }
   if (!Object.prototype.hasOwnProperty.call(config.params || {}, 'sign')) {
     const sign = getSignature(config)
-    config.params = { sign, ...config.params }
+    config.headers.sign = sign
+    // config.params = { sign, ...config.params }
   }
+
+  // params encoding for get request
+  if (config.method === 'get' && config.params) {
+    const params = encodeURIComponent(JSON.stringify(config.params.params))
+    config.url = config.url + '?params=' + params
+    config.params = {}
+  }
+
   return config
 }, error => {
   return Promise.reject(error)

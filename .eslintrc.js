@@ -4,8 +4,8 @@ require('@rushstack/eslint-patch/modern-module-resolution')
 module.exports = {
   root: true,
   extends: [
-    'plugin:vue/vue3-essential',
-    'eslint:recommended',
+    'plugin:vue/vue3-recommended',
+    // 'eslint:recommended',
     // '@vue/eslint-config-prettier',
   ],
   env: {
@@ -16,6 +16,13 @@ module.exports = {
     'node': true
   },
   rules: {
+    // 'vue/multi-word-component-names': ['error', {
+    //   'ignores': ['index', 'login']
+    // }],
+    'vue/no-template-key': 0,
+    'vue/no-v-for-template-key': 0,
+    // 'vue/no-template-key': 'off',
+    'vue/multi-word-component-names': 0,
     'vue/singleline-html-element-content-newline': 'off',
     'vue/multiline-html-element-content-newline': 'off',
     'vue/name-property-casing': ['error', 'PascalCase'],
