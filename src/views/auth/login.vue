@@ -38,6 +38,7 @@ import {validatePassword} from '@/utils/validate'
 import md5 from 'js-md5'
 import { sessionStore } from '@/stores/sessionStore'
 import { useRouter } from 'vue-router'
+import { throttle } from 'lodash'
 export default defineComponent({
   components: {
     VerificationCode
@@ -45,7 +46,7 @@ export default defineComponent({
   setup(props, ctx) {
     const router = useRouter()
     const loginFormRef = ref()
-    const onSubmit = async() => {
+    const login = async() => {
       const form = unref(loginFormRef)
       try {
         await form.validate()
@@ -61,7 +62,7 @@ export default defineComponent({
           console.log('------login success---', res.data)
           const store = sessionStore()
           Object.keys(res.data).map(key => {
-            store[key] = res.data[key]
+            store.userInfo[key] = res.data[key]
           })
           router.push({name: 'home'})
         }
@@ -82,11 +83,11 @@ export default defineComponent({
           { validator: validatePassword, trigger: 'blur' }
         ]
       },
+      onSubmit: throttle(login, 1000),
       form: {},
     })
     return {
       loginFormRef,
-      onSubmit,
       ...toRefs(state)
     }
   }

@@ -43,7 +43,7 @@ apiAxios.interceptors.request.use(config => {
   if (config.meta?.withProgressBar) { NProgress.start() }
   const store = sessionStore()
 
-  const accessToken = store.accessToken || ''
+  const accessToken = store.userInfo.accessToken || ''
   if (accessToken) {
     config.headers.Authorization = `${accessToken}`
     // config.headers.Authorization = `Bearer ${accessToken}`

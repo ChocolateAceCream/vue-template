@@ -40,7 +40,11 @@ export default defineComponent({
     const store = sessionStore()
 
     const state = reactive({
-      username: store.username
+      username: store.userInfo.username,
+      handleLogout() {
+        store.logout()
+        router.push({name: 'auth/login'})
+      }
     })
     return { ...toRefs(state) }
   }

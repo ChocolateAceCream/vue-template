@@ -15,7 +15,7 @@ export default defineComponent({
     }
     const store = sessionStore()
     store.$subscribe((_, s) => {
-      state.locale = elementPlusLocaleMapper[s.locale]
+      state.locale = elementPlusLocaleMapper[s.userInfo.locale]
     })
 
     const state = reactive({

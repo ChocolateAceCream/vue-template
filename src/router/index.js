@@ -8,13 +8,15 @@ import { ElMessage } from 'element-plus'
 
 const routes = [
   {
-    path: '/', redirect: '/home', component: BaseLayout, meta: { title: '主页', requireAuth: true },
+    path: '/', redirect: '/home', component: BaseLayout, meta: { title: '主页'},
+    // path: '/', redirect: '/home', component: BaseLayout, meta: { title: '主页', requireAuth: true },
     children: [
       {
         path: '/home', name: 'home', meta: { title: '主页', requireAuth: true }, component: () => import('@/views/Home.vue'),
       },
       {
-        path: '/menu', name: 'menu', meta: { title: '菜单管理', requireAuth: true }, component: () => import('@/views/SystemManagement/MenuManagement.vue'),
+        path: '/menu', name: 'menu', meta: { title: '菜单管理'}, component: () => import('@/views/SystemManagement/MenuManagement.vue'),
+        // path: '/menu', name: 'menu', meta: { title: '菜单管理', requireAuth: true }, component: () => import('@/views/SystemManagement/MenuManagement.vue'),
       },
     ]
   },

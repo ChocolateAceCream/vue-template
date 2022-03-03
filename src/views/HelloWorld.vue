@@ -31,7 +31,7 @@ export default defineComponent({
 
       changeLang(type) {
         proxy.$i18n.locale = type
-        store.locale = type
+        store.userInfo.locale = type
       },
       change() {
         store.counter++
