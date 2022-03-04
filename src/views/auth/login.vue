@@ -1,32 +1,67 @@
 <template>
-    <el-row class="login">
-      <el-col class="login-left-image" :span="10">
-      </el-col>
-      <el-col class="login-body" :span="14">
-        <div class="login-title">欢迎登录</div>
+
+
+  <el-row
+    class="login"
+  >
+    <el-col
+      class="login-left-image"
+      :span="10"
+    />
+    <el-col
+      class="login-body"
+      :span="14"
+    >
+      <div ref="loadingTarget">
+        <div
+          class="login-title"
+        >欢迎登录</div>
         <div class="login-subtitle">云wifi虚拟化AC</div>
-        <el-form :model="form" :rules="rules" ref="loginFormRef" label-width="0px">
+        <el-form
+          ref="loginFormRef"
+          :model="form"
+          :rules="rules"
+          label-width="0px"
+        >
           <el-form-item prop="username">
-            <el-input v-model="form.username" placeholder="用户名">
-            </el-input>
+            <el-input
+              v-model="form.username"
+              placeholder="用户名"
+            />
           </el-form-item>
           <el-form-item prop="password">
             <!-- <el-input type="password" placeholder="密码" v-model="form.password" @keyup.enter.native="handleSubmit('loginForm')"> -->
-            <el-input type="password" placeholder="密码" v-model="form.password">
-            </el-input>
+            <el-input
+              v-model="form.password"
+              type="password"
+              placeholder="密码"
+            />
           </el-form-item>
           <el-form-item prop="code">
             <el-space>
-              <el-input placeholder="验证码" v-model="form.code" />
+              <el-input
+                v-model="form.code"
+                placeholder="验证码"
+              />
               <VerificationCode ref="veCodeRef" />
             </el-space>
           </el-form-item>
           <div class="login-btn">
-            <el-button type="primary" @click="onSubmit">登录</el-button>
+            <el-button
+              type="primary"
+              @click="onSubmit"
+            >登录</el-button>
           </div>
-          <el-button class="login-new-user-btn" type="text" @click="handleRegisterUser"> 新用户注册</el-button>
+          <div class="login-new-user-btn-wrapper">
+            <el-button
+              type="text"
+              @click="handleRegisterUser"
+            > 新用户注册</el-button>
+          </div>
+
         </el-form>
-      </el-col>
+      </div>
+    </el-col>
   </el-row>
 </template>
 
@@ -39,6 +74,7 @@ import md5 from 'js-md5'
 import { sessionStore } from '@/stores/sessionStore'
 import { useRouter } from 'vue-router'
 import { throttle } from 'lodash'
+import useLoading from '@/components/shared/useLoading'
 export default defineComponent({
   components: {
     VerificationCode
@@ -46,26 +82,28 @@ export default defineComponent({
   setup(props, ctx) {
     const router = useRouter()
     const loginFormRef = ref()
+
     const login = async() => {
       const form = unref(loginFormRef)
       try {
-        await form.validate()
-        const {username, password, code} = state.form
-        const payload = {
-          account: username,
-          password: md5(password),
-          picCaptcha: code,
-        }
-        // const data = form.model
-        const {data: res} = await postLogin(payload)
-        if (res.errorCode === '0') {
-          console.log('------login success---', res.data)
-          const store = sessionStore()
-          Object.keys(res.data).map(key => {
-            store.userInfo[key] = res.data[key]
-          })
-          router.push({name: 'home'})
-        }
+        wrapLoading(async() => {
+          await form.validate()
+          const {username, password, code} = state.form
+          const payload = {
+            account: username,
+            password: md5(password),
+            picCaptcha: code,
+          }
+          const {data: res} = await postLogin(payload)
+          if (res.errorCode === '0') {
+            console.log('------login success---', res.data)
+            const store = sessionStore()
+            Object.keys(res.data).map(key => {
+              store.userInfo[key] = res.data[key]
+            })
+            router.push({name: 'home'})
+          }
+        })
       } catch (err) {
         console.log(err)
       }
@@ -86,9 +124,21 @@ export default defineComponent({
       onSubmit: throttle(login, 1000),
       form: {},
     })
+    const {loadingTarget, wrapLoading} = useLoading()
+    const handleRegisterUser = () => {
+      wrapLoading(async() => {
+        await new Promise(resolve => {
+          setTimeout(() => {
+            resolve()
+          }, 3000)
+        })
+      })
+    }
     return {
+      handleRegisterUser,
       loginFormRef,
-      ...toRefs(state)
+      loadingTarget,
+      ...toRefs(state),
     }
   }
 
@@ -171,5 +221,8 @@ export default defineComponent({
       border-radius: 20px;
       height: 40px;
     }
+  }
+  .login-new-user-btn-wrapper{
+    text-align: end;
   }
 </style>
