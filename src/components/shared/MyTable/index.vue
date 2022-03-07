@@ -1,12 +1,27 @@
 <template>
-  <el-table v-bind="$attrs" style="width: 100%"  >
-    <template v-for="(item, idx) in config" :key="idx">
-      <el-table-column v-bind="item"> 
-        <template v-if="item.headerSlot" #header>
-          <slot :name="item.headerSlot"></slot>
+  <el-table
+    v-bind="$attrs"
+    style="width: 100%"
+  >
+    <template
+      v-for="(item, idx) in config"
+      :key="idx"
+    >
+      <el-table-column v-bind="item">
+        <template
+          v-if="item.headerSlot"
+          #header
+        >
+          <slot :name="item.headerSlot" />
         </template>
-        <template v-if="item.bodySlot" #default="scope">
-          <slot :name="item.bodySlot" v-bind="scope"></slot>
+        <template
+          v-if="item.bodySlot"
+          #default="scope"
+        >
+          <slot
+            :name="item.bodySlot"
+            v-bind="scope"
+          />
         </template>
       </el-table-column>
     </template>

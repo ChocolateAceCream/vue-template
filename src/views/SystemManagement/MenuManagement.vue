@@ -12,7 +12,6 @@
     <my-table
       :data="tableData"
       :config="tableConfig"
-      :height="100"
     >
       <template #addressHeader="{row}">
         addddd
@@ -41,6 +40,25 @@
       style="justify-content: end"
       @change="handlePageChange"
     />
+    <modal
+      ref="modalRef"
+      @close="onModalClose"
+      @confirm="onModalConfirm"
+    >
+      <div>this is body</div>
+      <template #title>
+        <div>this is title</div>
+      </template>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">Cancel</el-button>
+          <el-button
+            type="primary"
+            @click="dialogFormVisible = false"
+          >Confirm</el-button>
+        </span>
+      </template>
+    </modal>
   </div>
 </template>
 
@@ -52,9 +70,7 @@ import { useRouter } from 'vue-router'
 // import MyTable from '@/components/shared/MyTable'
 import {getMenu, saveMenu} from '@/api/menu'
 import { sessionStore } from '@/stores/sessionStore'
-import Pagination from '../../components/shared/Pagination/index.vue'
 export default defineComponent({
-  components: { Pagination },
   // components: {
   //   MyTable
   // },
@@ -72,9 +88,29 @@ export default defineComponent({
         console.log('-------get menu res--------', res)
       }
     }
+    const handleRegisterUser = () => {
+      modalState.onModalOpen()
+    }
+
+    const modalState = reactive({
+      modalRef: null,
+      onModalOpen() {
+        modalState.modalRef.openModal()
+      },
+      onModalClose() {
+        modalState.modalRef.closeModal()
+        console.log('-------onCancel------')
+      },
+      onModalConfirm() {
+        modalState.modalRef.closeModal()
+        console.log('-------onModalConfirm------')
+      }
+    })
+
     const handlePageChange = () => {
       console.log('------handlePageChange-----------')
     }
+
     const state = reactive({
       pageCurge: 2,
       pageSize: 20,
@@ -116,7 +152,9 @@ export default defineComponent({
     return {
       search,
       handlePageChange,
-      ...toRefs(state)
+      handleRegisterUser,
+      ...toRefs(state),
+      ...toRefs(modalState)
     }
   }
 })

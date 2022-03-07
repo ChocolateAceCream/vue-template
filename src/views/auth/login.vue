@@ -1,9 +1,5 @@
 <template>
-
-
-  <el-row
-    class="login"
-  >
+  <el-row class="login">
     <el-col
       class="login-left-image"
       :span="10"
@@ -13,9 +9,7 @@
       :span="14"
     >
       <div ref="loadingTarget">
-        <div
-          class="login-title"
-        >欢迎登录</div>
+        <div class="login-title">欢迎登录</div>
         <div class="login-subtitle">云wifi虚拟化AC</div>
         <el-form
           ref="loginFormRef"
