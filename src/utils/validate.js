@@ -1,8 +1,6 @@
 // 密码
 const validatePassword = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请输入密码'))
-  } else if (!new RegExp('^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,20}$').test(value)) {
+  if (!new RegExp('^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,20}$').test(value)) {
     //  if (!/(?!^(\d+|[A-Za-z]+|[~!@$%^&*()+]+)$)^([A-Za-z0-9]+|[~!@$%^&*()+]){6,20}$/.test(value)) {
     callback(new Error('6~20位, 至少包含数字、字母、特殊字符中的两种'))
   }

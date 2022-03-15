@@ -20,7 +20,7 @@ export const sessionStore = defineStore({
     }
   },
   getters: {
-    doubleCount: (state) => state.counter * 2,  //demo only
+    doubleCount: (state) => state.counter * 2, // demo only
     isAuthenticated: (state) => {
       return state.userInfo.accessToken && state.userInfo.accessToken.length > 5
     }
