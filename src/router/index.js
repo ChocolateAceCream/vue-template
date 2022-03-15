@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routeMiddleware } from './middleware'
 import { auth } from './auth'
+import { device } from './device'
 import BaseLayout from '@/views/Layout/index'
 import { sessionStore } from '@/stores/sessionStore'
 
@@ -15,9 +16,22 @@ const routes = [
         path: '/home', name: 'home', meta: { title: '主页', requireAuth: true }, component: () => import('@/views/Home.vue'),
       },
       {
-        path: '/menu', name: 'menu', meta: { title: '菜单管理'}, component: () => import('@/views/SystemManagement/MenuManagement.vue'),
+        path: '/menu', name: 'menu', meta: { title: '菜单管理', isMenu: true
+        }, component: () => import('@/views/SystemManagement/MenuManagement/index.vue'),
         // path: '/menu', name: 'menu', meta: { title: '菜单管理', requireAuth: true }, component: () => import('@/views/SystemManagement/MenuManagement.vue'),
       },
+      {
+        path: '/role', name: 'role', meta: { title: '角色管理', isMenu: true }, component: () => import('@/views/SystemManagement/RoleManagement/index.vue'),
+      },
+      {
+        path: '/user', name: 'user', meta: { title: '账号管理', isMenu: true
+        }, component: () => import('@/views/SystemManagement/UserManagement/index.vue'),
+      },
+      {
+        path: '/logs', name: 'logs', meta: { title: '操作日志', isMenu: true
+        }, component: () => import('@/views/SystemManagement/OperationLog/index.vue'),
+      },
+      ...device
     ]
   },
   {
