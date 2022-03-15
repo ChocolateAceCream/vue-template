@@ -24,12 +24,18 @@
             />
           </el-form-item>
           <el-form-item prop="password">
-            <!-- <el-input type="password" placeholder="密码" v-model="form.password" @keyup.enter.native="handleSubmit('loginForm')"> -->
-            <el-input
-              v-model="form.password"
-              type="password"
-              placeholder="密码"
-            />
+            <el-space>
+              <el-input
+                v-model="form.password"
+                type="password"
+                placeholder="密码"
+              />
+              <el-button
+                type="text"
+                @click="handleResetPassword"
+              >忘记密码</el-button>
+            </el-space>
+
           </el-form-item>
           <el-form-item prop="code">
             <el-space>
@@ -46,7 +52,7 @@
               @click="onSubmit"
             >登录</el-button>
           </div>
-          <div class="login-new-user-btn-wrapper">
+          <div class="login-btn-wrapper">
             <el-button
               type="text"
               @click="handleRegisterUser"
@@ -80,8 +86,8 @@ export default defineComponent({
     const login = async() => {
       const form = unref(loginFormRef)
       try {
+        await form.validate()
         wrapLoading(async() => {
-          await form.validate()
           const {username, password, code} = state.form
           const payload = {
             account: username,
@@ -112,6 +118,7 @@ export default defineComponent({
           { required: true, message: '请输入验证码', trigger: 'blur' }
         ],
         password: [
+          { required: true, message: '请输入验密码', trigger: 'blur' },
           { validator: validatePassword, trigger: 'blur' }
         ]
       },
@@ -119,17 +126,26 @@ export default defineComponent({
       form: {},
     })
     const {loadingTarget, wrapLoading} = useLoading()
+    // const handleRegisterUser = () => {
+    //   wrapLoading(async() => {
+    //     await new Promise(resolve => {
+    //       setTimeout(() => {
+    //         resolve()
+    //       }, 3000)
+    //     })
+    //   })
+    // }
+
+    const handleResetPassword = () => {
+      router.push({name: 'auth/password'})
+    }
+
     const handleRegisterUser = () => {
-      wrapLoading(async() => {
-        await new Promise(resolve => {
-          setTimeout(() => {
-            resolve()
-          }, 3000)
-        })
-      })
+      router.push({name: 'auth/register'})
     }
     return {
       handleRegisterUser,
+      handleResetPassword,
       loginFormRef,
       loadingTarget,
       ...toRefs(state),
@@ -216,7 +232,8 @@ export default defineComponent({
       height: 40px;
     }
   }
-  .login-new-user-btn-wrapper{
+  .login-btn-wrapper{
     text-align: end;
+    width: 100%;
   }
 </style>

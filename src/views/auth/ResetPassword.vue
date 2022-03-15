@@ -18,12 +18,13 @@
         label-width="100px"
       >
         <el-form-item
-          prop="username"
-          label="用户名"
+          prop="oldPassword"
+          label="旧密码"
         >
           <el-input
-            v-model="form.username"
-            placeholder="用户名"
+            v-model="form.oldPassword"
+            type="password"
+            placeholder="6~20位, 至少包含数字、字母、特殊字符中的两种"
           />
         </el-form-item>
         <el-form-item
@@ -56,22 +57,6 @@
               placeholder="验证码"
             />
             <VerificationCode ref="veCodeRef" />
-          </el-space>
-        </el-form-item>
-        <el-form-item
-          prop="smsCode"
-          label="手机验证码"
-        >
-          <el-space>
-            <el-input
-              v-model="form.smsCode"
-              placeholder="验证码"
-            />
-            <el-button
-              type="warning"
-              :disabled="isSmsButtonDisabled"
-              @click="onSendCode"
-            >{{ isSmsButtonDisabled ? "倒计时" + smsCountdown + "秒" : "获取验证码" }}</el-button>
           </el-space>
         </el-form-item>
         <el-form-item>
@@ -111,24 +96,21 @@ export default defineComponent({
     const state = reactive({
 
       rules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+        oldPassword: [
+          { required: true, message: '请输入旧密码', trigger: 'blur' },
+          { validator: validatePassword, trigger: 'blur' }
         ],
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' }
         ],
-        smsCode: [
-          { required: true, message: '请输入手机验证码', trigger: 'blur' }
-        ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          { required: true, message: '请输入新密码', trigger: 'blur' },
           { validator: validatePassword, trigger: 'blur' }
         ],
         passwordConfirm: [
-          { required: true, message: '请二次输入密码', trigger: 'blur' },
+          { required: true, message: '请二次输入新密码', trigger: 'blur' },
           { validator: validateConfirmPassword, trigger: 'blur' }
         ]
-
       },
       form: {},
     })
@@ -141,47 +123,10 @@ export default defineComponent({
       router.back()
     }
 
-    const setTimeCallback = () => {
-      smsStates.smsCountdown = 60
-      smsStates.isSmsButtonDisabled = true
-      const timer = setInterval(() => {
-        if (smsStates.smsCountdown === 0) {
-          clearInterval(timer)
-          this.isSmsButtonDisabled = false
-        } else {
-          smsStates.smsCountdown--
-        }
-      }, 1000)
-    }
-    const smsStates = reactive({
-      isSmsButtonDisabled: false,
-      smsCountdown: 60,
-      onSendCode() {
-        const fieldToValidate = [
-          'username', 'password'
-        ]
-        Promise.all(
-          fieldToValidate.map(item => {
-            const p = new Promise((resolve, reject) => {
-              resetPasswordFormRef.value.validateField(item, valid => {
-                resolve(valid)
-              })
-            })
-            return p
-          })
-        ).then(results => {
-          const filteredResult = results.filter(item => item !== '')
-          if (filteredResult.length === 0) {
-            setTimeCallback()
-          }
-        })
-      }
-    })
     return {
       resetPasswordFormRef,
       onResetPassword,
       handleStepBack,
-      ...toRefs(smsStates),
       ...toRefs(state)
     }
   }
